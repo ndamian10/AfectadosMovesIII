@@ -1,0 +1,135 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Afectados MOVES III</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Plataforma Afectados MOVES III</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#what-happened">¿Qué pasó?</a></li>
+                <li><a href="#actions">Acciones emprendidas</a></li>
+                <li><a href="#community">Formulario y comunidad</a></li>
+                <li><a href="#resources">Recursos</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="home">
+            <h1>Plataforma Afectados MOVES III</h1>
+            <p>Un vacío legal entre diciembre de 2024 y enero de 2025 dejó a miles de compradores de vehículos eléctricos sin las ayudas del programa MOVES III. Únete para buscar soluciones.</p>
+            <a href="https://forms.gle/6tX9kUvLemAXD5io6" target="_blank" class="cta-button">Únete a la plataforma</a>
+        </section>
+        <section id="what-happened">
+            <h2>¿Qué pasó con el MOVES III?</h2>
+            <p>Un vacío legal, surgido entre diciembre de 2024 y enero de 2025 tras la derogación del RD-Ley 9/2024, excluyó a miles de compradores de vehículos eléctricos de las ayudas del programa MOVES III, a pesar de la prórroga establecida en el BOE-A-2024-12944 hasta el 31/12/2024.</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="date">10 de diciembre de 2024</span>
+                    <p>Publicación del Real Decreto-Ley 9/2024 que modifica las condiciones del MOVES III.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="date">20 de diciembre de 2024</span>
+                    <p>Derogación del RD-Ley 9/2024, generando un vacío legal.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="date">15 de enero de 2025</span>
+                    <p>Los afectados inician acciones legales y colectivas.</p>
+                </div>
+            </div>
+            <blockquote>
+                <p>"El BOE-A-2024-12944 prorrogaba el programa MOVES III hasta el 31 de diciembre de 2024, pero la derogación posterior generó confusión y perjuicio."</p>
+            </blockquote>
+        </section>
+        <section id="actions">
+            <h2>Acciones emprendidas</h2>
+            <p>La plataforma ha iniciado las siguientes acciones para defender los derechos de los afectados:</p>
+            <ul>
+                <li>Reclamaciones administrativas al Ministerio de Transición Ecológica.</li>
+                <li>Contacto con el Defensor del Pueblo para exponer la situación.</li>
+                <li>Colaboración con abogados especializados en derecho administrativo.</li>
+                <li>Difusión en medios para visibilizar el problema.</li>
+            </ul>
+            <!-- Testimonios de afectados pueden añadirse aquí -->
+        </section>
+        <section id="community">
+            <h2>Únete a la comunidad</h2>
+            <p>Si compraste un vehículo eléctrico entre diciembre de 2024 y enero de 2025, únete a nosotros:</p>
+            <a href="https://forms.gle/6tX9kUvLemAXD5io6" target="_blank" class="button">Formulario para afectados</a>
+            <a href="https://t.me/estafamoves" target="_blank" class="button">Grupo de Telegram</a>
+        </section>
+        <section id="resources">
+            <h2>Recursos y medios</h2>
+            <h3>Vídeos de afectados</h3>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <p>(Sustituye el enlace del vídeo con contenido real cuando esté disponible)</p>
+            <h3>Cobertura en medios</h3>
+            <ul>
+                <li><a href="#" target="_blank">Artículo en El País (próximamente)</a></li>
+                <li><a href="#" target="_blank">Reportaje en La Vanguardia (próximamente)</a></li>
+            </ul>
+            <h3>Documentos descargables</h3>
+            <ul>
+                <li><a href="https://www.boe.es/boe/dias/2024/07/01/pdfs/BOE-A-2024-12944.pdf" target="_blank">BOE-A-2024-12944</a></li>
+                <li><a href="#" target="_blank">Real Decreto-Ley 9/2024 (sustituir enlace)</a></li>
+            </ul>
+        </section>
+        <section id="contact">
+            <h2>Contacto</h2>
+            <p>Escríbenos a: <a href="mailto:contacto@plataformaafectadosmovesiii.es">contacto@plataformaafectadosmovesiii.es</a></p>
+        </section>
+        <!-- Sección de "últimas actualizaciones" puede añadirse aquí -->
+    </main>
+    <footer>
+        <p>&copy; 2025 Plataforma Afectados MOVES III. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
