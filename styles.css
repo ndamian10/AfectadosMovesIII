@@ -41,10 +41,12 @@ nav ul {
     margin: 0;
     padding: 0;
     display: flex;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
 }
 
 nav ul li {
     margin-left: 20px;
+    white-space: nowrap; /* Prevents text wrapping within li */
 }
 
 nav ul li a {
